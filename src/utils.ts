@@ -77,6 +77,15 @@ export const isWritableElement = (
     (isInputElement(target) &&
       (target.type === "text" || target.type === "number")));
 
+export const isTextSeleced = () => {
+  const selection = window.getSelection();
+  if (!selection) {
+    return false;
+  }
+
+  return selection.toString().length > 0;
+};
+
 export const getFontFamilyString = ({
   fontFamily,
 }: {

@@ -51,11 +51,13 @@ import { distance2d, isPathALoop } from "../math";
 
 import {
   isWritableElement,
+  isTextSeleced,
   isInputLike,
   isToolIcon,
   debounce,
   distance,
   viewportCoordsToSceneCoords,
+  removeSelection,
   sceneCoordsToViewportCoords,
   getCursorForShape,
 } from "../utils";
@@ -165,9 +167,9 @@ class App extends React.Component<any, AppState> {
   container: HTMLElement | null = null;
 
   public state: AppState = {
+    ...getDefaultAppState(),
     canvasWidth: 800,
     canvasHeight: 600,
-    ...getDefaultAppState(),
     isLoading: true,
   };
 
@@ -540,6 +542,8 @@ class App extends React.Component<any, AppState> {
     const window = this.props.window;
     const document = window.document;
 
+    removeSelection();
+
     document.removeEventListener(EVENT.COPY, this.onCopy);
     document.removeEventListener(EVENT.PASTE, this.pasteFromClipboard);
     document.removeEventListener(EVENT.CUT, this.onCut);
@@ -691,6 +695,7 @@ class App extends React.Component<any, AppState> {
     if (isWritableElement(event.target)) {
       return;
     }
+
     this.copyAll();
     const { elements: nextElements, appState } = deleteSelectedElements(
       globalSceneState.getElementsIncludingDeleted(),
@@ -706,6 +711,10 @@ class App extends React.Component<any, AppState> {
     if (isWritableElement(event.target)) {
       return;
     }
+    if (isTextSeleced()) {
+      return;
+    }
+
     this.copyAll();
     event.preventDefault();
   });
